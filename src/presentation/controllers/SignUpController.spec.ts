@@ -15,8 +15,12 @@ describe('SignUp Controller', () => {
       beforeAll(() => {
         httpResponse = sut.handle(httpRequestDefault)
       })
-      it('should return 400', () => {
+      it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
+      })
+
+      it('should body return error', () => {
+        expect(httpResponse.body).toEqual(new Error('Missing param: name'))
       })
     })
   })
