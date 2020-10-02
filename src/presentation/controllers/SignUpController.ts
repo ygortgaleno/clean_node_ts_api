@@ -1,3 +1,4 @@
+import { MissingParamError } from '../Errors/MissingParamError'
 import { HttpRequest, HttpResponse } from '../protocols/Http'
 
 export class SignUpController {
@@ -5,11 +6,11 @@ export class SignUpController {
     let error: Error = new Error()
 
     if (!httpRequest.body.name) {
-      error = new Error('Missing param: name')
+      error = new MissingParamError('name')
     }
 
     if (!httpRequest.body.email) {
-      error = new Error('Missing param: email')
+      error = new MissingParamError('email')
     }
 
     return {

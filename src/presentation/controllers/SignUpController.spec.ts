@@ -1,10 +1,12 @@
+import { MissingParamError } from '../Errors/MissingParamError'
+import { HttpRequest, HttpResponse } from '../protocols/Http'
 import { SignUpController } from './SignUpController'
 
 describe('SignUp Controller', () => {
   describe('when create user', () => {
     const sut = new SignUpController()
-    let httpRequest
-    let httpResponse
+    let httpRequest: HttpRequest
+    let httpResponse: HttpResponse
 
     describe('and no name is provided', () => {
       beforeAll(() => {
@@ -22,7 +24,7 @@ describe('SignUp Controller', () => {
       })
 
       it('should body return error', () => {
-        expect(httpResponse.body).toEqual(new Error('Missing param: name'))
+        expect(httpResponse.body).toEqual(new MissingParamError('name'))
       })
     })
 
@@ -42,7 +44,7 @@ describe('SignUp Controller', () => {
       })
 
       it('should body return error', () => {
-        expect(httpResponse.body).toEqual(new Error('Missing param: email'))
+        expect(httpResponse.body).toEqual(new MissingParamError('email'))
       })
     })
   })
