@@ -3,7 +3,6 @@ import validator from 'validator'
 
 jest.mock('validator', () => ({
   isEmail (): boolean {
-    console.log('here')
     return true
   }
 }))
@@ -26,6 +25,10 @@ describe('EmailValidator Adapter', () => {
     let isValid: boolean
     beforeAll(() => {
       isValid = sut.isValid('valid_email')
+    })
+
+    it('should call with correct email', () => {
+      expect(validator.isEmail).toHaveBeenCalledWith('valid_email')
     })
 
     it('should return true', () => {
