@@ -2,9 +2,11 @@ import { MissingParamError } from '../Errors/MissingParamError'
 import { HttpRequest, HttpResponse } from '../protocols/Http'
 import { SignUpController } from './SignUpController'
 
+const makeSut = (): SignUpController => new SignUpController()
+
 describe('SignUp Controller', () => {
   describe('when create user', () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     let httpRequest: HttpRequest
     let httpResponse: HttpResponse
 
