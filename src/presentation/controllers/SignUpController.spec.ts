@@ -8,7 +8,7 @@ describe('SignUp Controller', () => {
     let httpRequest: HttpRequest
     let httpResponse: HttpResponse
 
-    describe('and no name is provided', () => {
+    describe('and name is not provided', () => {
       beforeAll(() => {
         httpRequest = {
           body: {
@@ -28,7 +28,7 @@ describe('SignUp Controller', () => {
       })
     })
 
-    describe('and no email is provided', () => {
+    describe('and email is not provided', () => {
       beforeAll(() => {
         httpRequest = {
           body: {
@@ -45,6 +45,26 @@ describe('SignUp Controller', () => {
 
       it('should body return error', () => {
         expect(httpResponse.body).toEqual(new MissingParamError('email'))
+      })
+    })
+
+    describe('and password is not provided', () => {
+      beforeAll(() => {
+        httpRequest = {
+          body: {
+            name: 'any_name',
+            email: 'any_email',
+            passwordConfirmation: 'any_password'
+          }
+        }
+        httpResponse = sut.handle(httpRequest)
+      })
+      it('should status code return 400', () => {
+        expect(httpResponse.statusCode).toBe(400)
+      })
+
+      it('should body return error', () => {
+        expect(httpResponse.body).toEqual(new MissingParamError('password'))
       })
     })
   })
