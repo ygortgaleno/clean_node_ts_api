@@ -230,5 +230,29 @@ describe('SignUp Controller', () => {
         })
       })
     })
+
+    describe('and CreateUser throws', () => {
+      beforeAll(() => {
+        jest.spyOn(createUserStub, 'execute').mockImplementationOnce(() => {
+          throw new Error()
+        })
+        httpRequest = {
+          body: {
+            name: 'any_name',
+            email: 'any_email',
+            password: 'any_password',
+            passwordConfirmation: 'any_password'
+          }
+        }
+        httpResponse = sut.handle(httpRequest)
+      })
+      it('should status code return 400', () => {
+        expect(httpResponse.statusCode).toBe(500)
+      })
+
+      it('should body return error', () => {
+        expect(httpResponse.body).toEqual(new ServerError())
+      })
+    })
   })
 })
