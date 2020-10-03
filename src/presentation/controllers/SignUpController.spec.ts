@@ -1,16 +1,12 @@
+import { UserModel } from '../../domain/entities/UserModel'
+import { CreateUser } from '../../domain/interactors/CreateUser'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
 import { EmailValidator, HttpRequest, HttpResponse } from '../protocols'
-
 import { SignUpController } from './SignUpController'
-
-export interface SutType {
-  sut: SignUpController
-  emailValidatorStub: EmailValidator
-}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
+    isValid (_email: string): boolean {
       return true
     }
   }
@@ -18,19 +14,44 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeCreateUser = (): CreateUser => {
+  class CreateUserUseCaseStub implements CreateUser {
+    execute (_user: Omit<UserModel, 'id'>): UserModel {
+      const fakeUser: UserModel = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password'
+      }
+
+      return fakeUser
+    }
+  }
+
+  return new CreateUserUseCaseStub()
+}
+
+export interface SutType {
+  sut: SignUpController
+  emailValidatorStub: EmailValidator
+  createUserStub: CreateUser
+}
+
 const makeSut = (): SutType => {
   const emailValidatorStub = makeEmailValidator()
-  const sut = new SignUpController(emailValidatorStub)
+  const createUserStub = makeCreateUser()
+  const sut = new SignUpController(emailValidatorStub, createUserStub)
 
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    createUserStub
   }
 }
 
 describe('SignUp Controller', () => {
   describe('when create user', () => {
-    const { sut, emailValidatorStub } = makeSut()
+    const { sut, emailValidatorStub, createUserStub } = makeSut()
     let httpRequest: HttpRequest
     let httpResponse: HttpResponse
 
@@ -183,6 +204,29 @@ describe('SignUp Controller', () => {
 
       it('should body return error', () => {
         expect(httpResponse.body).toEqual(new ServerError())
+      })
+    })
+
+    describe('and call CreateUser', () => {
+      beforeAll(() => {
+        jest.spyOn(createUserStub, 'execute')
+        httpRequest = {
+          body: {
+            email: 'invalid_email',
+            name: 'any_name',
+            password: 'any_password',
+            passwordConfirmation: 'any_password'
+          }
+        }
+        httpResponse = sut.handle(httpRequest)
+      })
+
+      it('should call EmailValidator with correct email', () => {
+        expect(createUserStub.execute).toHaveBeenCalledWith({
+          email: 'invalid_email',
+          name: 'any_name',
+          password: 'any_password'
+        })
       })
     })
   })
