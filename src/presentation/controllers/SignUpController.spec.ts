@@ -114,6 +114,27 @@ describe('SignUp Controller', () => {
       })
     })
 
+    describe('and password confirmation fails', () => {
+      beforeAll(() => {
+        httpRequest = {
+          body: {
+            name: 'any_name',
+            email: 'any_email',
+            password: 'any_password',
+            passwordConfirmation: 'invalid_password_confirmation'
+          }
+        }
+        httpResponse = sut.handle(httpRequest)
+      })
+      it('should status code return 400', () => {
+        expect(httpResponse.statusCode).toBe(400)
+      })
+
+      it('should body return error', () => {
+        expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirmation'))
+      })
+    })
+
     describe('and email is invalid', () => {
       beforeAll(() => {
         jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
