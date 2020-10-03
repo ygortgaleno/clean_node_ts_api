@@ -254,5 +254,31 @@ describe('SignUp Controller', () => {
         expect(httpResponse.body).toEqual(new ServerError())
       })
     })
+
+    describe('and data is correct', () => {
+      beforeAll(() => {
+        httpRequest = {
+          body: {
+            name: 'valid_name',
+            email: 'valid_email',
+            password: 'valid_password',
+            passwordConfirmation: 'valid_password'
+          }
+        }
+        httpResponse = sut.handle(httpRequest)
+      })
+      it('should status code return 400', () => {
+        expect(httpResponse.statusCode).toBe(200)
+      })
+
+      it('should body return error', () => {
+        expect(httpResponse.body).toEqual({
+          id: 'valid_id',
+          name: 'valid_name',
+          email: 'valid_email',
+          password: 'valid_password'
+        })
+      })
+    })
   })
 })
