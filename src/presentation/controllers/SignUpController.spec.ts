@@ -1,7 +1,8 @@
 import { UserModel } from '../../domain/entities/UserModel'
 import { CreateUser } from '../../domain/interactors/CreateUser'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
-import { EmailValidator, HttpRequest, HttpResponse } from '../protocols'
+import { HttpRequest, HttpResponse } from '../protocols/Http'
+import { EmailValidator } from '../validators/EmailValidator'
 import { SignUpController } from './SignUpController'
 
 const makeEmailValidator = (): EmailValidator => {
