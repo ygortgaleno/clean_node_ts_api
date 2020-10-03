@@ -124,6 +124,10 @@ describe('SignUp Controller', () => {
         httpResponse = sut.handle(httpRequest)
       })
 
+      it('should call EmailValidator with correct email', () => {
+        expect(emailValidatorStub.isValid).toHaveBeenCalledWith('invalid_email')
+      })
+
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
       })
