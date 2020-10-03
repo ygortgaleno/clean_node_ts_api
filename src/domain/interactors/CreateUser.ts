@@ -1,5 +1,5 @@
-import { UserModel } from '../entities/UserModel'
+import { User } from '../entities/User'
 export interface CreateUser {
-  execute: (user: Omit<UserModel, 'id'>) => Promise<UserModel>
+  execute: (user: Omit<User, 'id'>) => Promise<User>
 
 }

@@ -1,4 +1,4 @@
-import { UserModel } from '../../domain/entities/UserModel'
+import { User } from '../../domain/entities/User'
 import { CreateUser } from '../../domain/interactors/CreateUser'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
 import { HttpRequest, HttpResponse } from '../protocols/Http'
@@ -17,8 +17,8 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeCreateUser = (): CreateUser => {
   class CreateUserUseCaseStub implements CreateUser {
-    async execute (_user: Omit<UserModel, 'id'>): Promise<UserModel> {
-      const fakeUser: UserModel = {
+    async execute (_user: Omit<User, 'id'>): Promise<User> {
+      const fakeUser: User = {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email',
