@@ -17,7 +17,7 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeCreateUser = (): CreateUser => {
   class CreateUserUseCaseStub implements CreateUser {
-    execute (_user: Omit<UserModel, 'id'>): UserModel {
+    async execute (_user: Omit<UserModel, 'id'>): Promise<UserModel> {
       const fakeUser: UserModel = {
         id: 'valid_id',
         name: 'valid_name',
@@ -57,7 +57,7 @@ describe('SignUp Controller', () => {
     let httpResponse: HttpResponse
 
     describe('and name is not provided', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             email: 'any_email',
@@ -65,7 +65,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
@@ -77,7 +77,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and email is not provided', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             name: 'any_name',
@@ -85,7 +85,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
@@ -97,7 +97,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and password is not provided', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             name: 'any_name',
@@ -105,7 +105,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
@@ -117,7 +117,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and password confirmation is not provided', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             name: 'any_name',
@@ -125,7 +125,7 @@ describe('SignUp Controller', () => {
             password: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
@@ -137,7 +137,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and password confirmation fails', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             name: 'any_name',
@@ -146,7 +146,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'invalid_password_confirmation'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(400)
@@ -158,7 +158,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and email is invalid', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
         httpRequest = {
           body: {
@@ -168,7 +168,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
 
       it('should call EmailValidator with correct email', () => {
@@ -185,7 +185,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and EmailValidator throws', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
           throw new Error()
         })
@@ -197,7 +197,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(500)
@@ -209,7 +209,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and call CreateUser', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         jest.spyOn(createUserStub, 'execute')
         httpRequest = {
           body: {
@@ -219,7 +219,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
 
       it('should call EmailValidator with correct email', () => {
@@ -232,7 +232,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and CreateUser throws', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         jest.spyOn(createUserStub, 'execute').mockImplementationOnce(() => {
           throw new Error()
         })
@@ -244,7 +244,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'any_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(500)
@@ -256,7 +256,7 @@ describe('SignUp Controller', () => {
     })
 
     describe('and data is correct', () => {
-      beforeAll(() => {
+      beforeAll(async () => {
         httpRequest = {
           body: {
             name: 'valid_name',
@@ -265,7 +265,7 @@ describe('SignUp Controller', () => {
             passwordConfirmation: 'valid_password'
           }
         }
-        httpResponse = sut.handle(httpRequest)
+        httpResponse = await sut.handle(httpRequest)
       })
       it('should status code return 400', () => {
         expect(httpResponse.statusCode).toBe(200)
