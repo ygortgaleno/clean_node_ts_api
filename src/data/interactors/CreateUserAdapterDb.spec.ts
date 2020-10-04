@@ -27,7 +27,7 @@ const makeSut = (): SutTypes => {
 
 describe('CreateUserAdapter interactor', () => {
   const { sut, encrypterStub } = makeSut()
-  const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
+  const encrypterSpy = jest.spyOn(encrypterStub, 'encrypt')
   const userData = {
     name: 'valid_name',
     email: 'valid_email',
@@ -38,7 +38,17 @@ describe('CreateUserAdapter interactor', () => {
       await sut.execute(userData)
     })
     it('should call with correct password', () => {
-      expect(encryptSpy).toHaveBeenCalledWith(userData.password)
+      expect(encrypterSpy).toHaveBeenCalledWith(userData.password)
+    })
+  })
+
+  describe('and encrypter throws', () => {
+    beforeAll(() => {
+      jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(new Error())
+    })
+
+    it('should throw error', async () => {
+      await expect(sut.execute(userData)).rejects.toThrow()
     })
   })
 })
