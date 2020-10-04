@@ -1,8 +1,8 @@
-import { EmailValidator } from '../presentation/validators/EmailValidator'
-import validator from 'validator'
+import validator from 'validator';
+import { EmailValidator } from '../presentation/validators/EmailValidator';
 
 export class EmailValidatorAdapter implements EmailValidator {
-  isValid (email: string): boolean {
-    return validator.isEmail(email)
+  isValid(email: string): boolean {
+    return validator.isEmail(email);
   }
 }
