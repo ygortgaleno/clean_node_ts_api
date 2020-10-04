@@ -91,4 +91,15 @@ describe('CreateUserAdapter interactor', () => {
       await expect(sut.execute(userData)).rejects.toThrow();
     });
   });
+
+  describe('and promise resolves', () => {
+    let user: User;
+    beforeAll(async () => {
+      user = await sut.execute(userData);
+    });
+
+    it('should return an user', () => {
+      expect(user).toEqual({ ...userData, id: 'valid_id', password: 'hashed_password' });
+    });
+  });
 });
