@@ -81,4 +81,14 @@ describe('CreateUserAdapter interactor', () => {
         .toHaveBeenCalledWith({ ...userData, password: 'hashed_password' });
     });
   });
+
+  describe('and CreateUserRepository throws', () => {
+    beforeAll(() => {
+      jest.spyOn(createUserRepositoryStub, 'execute').mockRejectedValueOnce(new Error());
+    });
+
+    it('should throw error', async () => {
+      await expect(sut.execute(userData)).rejects.toThrow();
+    });
+  });
 });
