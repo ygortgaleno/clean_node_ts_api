@@ -1,15 +1,28 @@
-import { CreateUser } from '../../domain/interactors/CreateUser'
 import { Encrypter } from '../protocols/encrypter'
 import { CreateUserAdapterDb } from './CreateUserAdapterDb'
 
-class EncryptStub implements Encrypter {
-  async encrypt (value: string): Promise<string> {
-    return 'hashed_password'
+interface SutTypes {
+  sut: CreateUserAdapterDb
+  encrypterStub: Encrypter
+}
+
+const makeSut = (): SutTypes => {
+  class EncryptStub implements Encrypter {
+    async encrypt (value: string): Promise<string> {
+      return 'hashed_password'
+    }
+  }
+
+  const encrypterStub = new EncryptStub()
+  const sut = new CreateUserAdapterDb(encrypterStub)
+
+  return {
+    sut, encrypterStub
   }
 }
+
 describe('CreateUserAdapter interactor', () => {
-  const encrypterStub = new EncryptStub()
-  const sut: CreateUser = new CreateUserAdapterDb(encrypterStub)
+  const { sut, encrypterStub } = makeSut()
   const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
   const userData = {
     name: 'valid_name',
