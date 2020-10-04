@@ -5,9 +5,11 @@ jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashed_value'),
 }));
 
+const salt = 12;
+const makeSut = (): BcryptAdapter => new BcryptAdapter(salt);
+
 describe('Bcrypt Adapter', () => {
-  const salt = 12;
-  const sut = new BcryptAdapter(salt);
+  const sut = makeSut();
   describe('and promises resolves', () => {
     let hash: string;
     beforeAll(async () => {
